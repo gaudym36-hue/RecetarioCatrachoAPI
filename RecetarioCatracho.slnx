@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Recetario.Api/Recetario.Api.csproj" />
+  <Project Path="Recetario.Application/Recetario.Application.csproj" />
+  <Project Path="Recetario.Domain/Recetario.Domain.csproj" />
+  <Project Path="Recetario.Infrastructure/Recetario.Infrastructure.csproj" />
+</Solution>
