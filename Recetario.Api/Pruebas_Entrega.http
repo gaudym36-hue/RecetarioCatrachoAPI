@@ -1,0 +1,63 @@
+﻿@base_url = http://localhost:5001/api
+
+### 1. GET Categorias (200 OK)
+GET {{base_url}}/Categorias
+
+### 2. GET Lista de Recetas con paginacion (200 OK)
+GET {{base_url}}/Recetas?page=1&pageSize=5
+
+### 3. GET Busqueda por texto y filtro por categoria (200 OK)
+GET {{base_url}}/Recetas?search=Pollo&categoriaId=2
+
+### 4. POST Crear receta nueva (201 Created + Header Location)
+POST {{base_url}}/Recetas
+Content-Type: application/json
+
+{
+  "nombre": "Montucas Catrachas",
+  "ingredientes": "Elote tierno molido, carne de cerdo o pollo, mantequilla, leche, hojas de elote",
+  "pasos": "Mezclar la masa de elote con condimentos, rellenar con carne guisada, envolver en tusa y cocer al vapor.",
+  "categoriaId": 2
+}
+
+### 5. POST Regla de negocio: Nombre duplicado (409 Conflict)
+POST {{base_url}}/Recetas
+Content-Type: application/json
+
+{
+  "nombre": "Montucas Catrachas",
+  "ingredientes": "Elote tierno",
+  "pasos": "Cocer al vapor",
+  "categoriaId": 2
+}
+
+### 6. POST Validacion de datos invalidos (400 Bad Request)
+POST {{base_url}}/Recetas
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "ingredientes": "",
+  "pasos": "",
+  "categoriaId": 99
+}
+
+### 7. GET Detalle por ID (200 OK - Sustituir ID real)
+GET {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000
+
+### 8. GET Detalle ID inexistente (404 Not Found)
+GET {{base_url}}/Recetas/99999999-9999-9999-9999-999999999999
+
+### 9. PUT Actualizar receta (204 No Content - Sustituir ID real)
+PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "nombre": "Montucas Catrachas Especiales",
+  "ingredientes": "Elote tierno, cerdo, pollo, crema, queso",
+  "pasos": "Envolver en hoja de elote y hervir por 45 minutos.",
+  "categoriaId": 2
+}
+
+### 10. DELETE Eliminar receta (204 No Content - Sustituir ID real)
+DELETE {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000

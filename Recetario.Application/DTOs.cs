@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Recetario.Domain.Entities;
 
 namespace Recetario.Application;
 
@@ -14,12 +12,12 @@ public record CreateRecetaDto(
     [StringLength(2000, MinimumLength = 10, ErrorMessage = "Los ingredientes deben tener entre 10 y 2000 caracteres.")]
     string Ingredientes,
 
-    [Required(ErrorMessage = "Los pasos de preparación son obligatorios.")]
+    [Required(ErrorMessage = "Los pasos de preparaciÃ³n son obligatorios.")]
     [StringLength(4000, MinimumLength = 10, ErrorMessage = "Los pasos deben tener entre 10 y 4000 caracteres.")]
     string Pasos,
 
-    [Required(ErrorMessage = "La categoría es obligatoria.")]
-    [Range(1, 6, ErrorMessage = "Debe seleccionar una categoría válida.")]
+    [Required(ErrorMessage = "La categorÃ­a es obligatoria.")]
+    [Range(1, 6, ErrorMessage = "Debe seleccionar una categorÃ­a vÃ¡lida.")]
     int CategoriaId
 );
 
@@ -32,17 +30,17 @@ public record UpdateRecetaDto(
     [StringLength(2000, MinimumLength = 10, ErrorMessage = "Los ingredientes deben tener entre 10 y 2000 caracteres.")]
     string Ingredientes,
 
-    [Required(ErrorMessage = "Los pasos de preparación son obligatorios.")]
+    [Required(ErrorMessage = "Los pasos de preparaciÃ³n son obligatorios.")]
     [StringLength(4000, MinimumLength = 10, ErrorMessage = "Los pasos deben tener entre 10 y 4000 caracteres.")]
     string Pasos,
 
-    [Required(ErrorMessage = "La categoría es obligatoria.")]
-    [Range(1, 6, ErrorMessage = "Debe seleccionar una categoría válida.")]
+    [Required(ErrorMessage = "La categorÃ­a es obligatoria.")]
+    [Range(1, 6, ErrorMessage = "Debe seleccionar una categorÃ­a vÃ¡lida.")]
     int CategoriaId
 );
 
 public record RecetaResponseDto(
-    Guid Id,
+    int Id,
     string Nombre,
     string Ingredientes,
     string Pasos,
@@ -54,4 +52,14 @@ public record PagedResultDto<T>(
     int Page,
     int PageSize,
     int TotalItems
+);
+
+public record ImagenBase64Dto(
+    string NombreArchivo,
+    string ImagenBase64
+);
+
+public record FileDownloadDto(
+    string FullPath,
+    string ContentType
 );

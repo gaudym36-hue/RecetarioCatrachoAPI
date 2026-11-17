@@ -21,18 +21,22 @@ public class ErrorHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/problem+json";
-        var statusCode = exception switch
+
+        var (statusCode, title) = exception switch
         {
-            NotFoundException => StatusCodes.Status404NotFound,
-            ConflictException => StatusCodes.Status409Conflict,
-            _ => StatusCodes.Status500InternalServerError
+            BadRequestException => (StatusCodes.Status400BadRequest, "Solicitud inválida o Base64 corrupto"),
+            NotFoundException => (StatusCodes.Status404NotFound, "Recurso no encontrado"),
+            ConflictException => (StatusCodes.Status409Conflict, "Conflicto de datos"),
+            PayloadTooLargeException => (StatusCodes.Status413PayloadTooLarge, "Archivo demasiado grande"),
+            UnsupportedMediaTypeException => (StatusCodes.Status415UnsupportedMediaType, "Formato de archivo no permitido"),
+            _ => (StatusCodes.Status500InternalServerError, "Error interno del servidor")
         };
 
         context.Response.StatusCode = statusCode;
         var problem = new ProblemDetails
         {
             Status = statusCode,
-            Title = statusCode == 404 ? "No encontrado" : statusCode == 409 ? "Conflicto de datos" : "Error de Servidor",
+            Title = title,
             Detail = exception.Message,
             Instance = context.Request.Path
         };

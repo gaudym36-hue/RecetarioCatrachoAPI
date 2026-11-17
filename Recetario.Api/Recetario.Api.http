@@ -1,18 +1,18 @@
-﻿@base_url = http://localhost:5001/api
+﻿# Dirección base de nuestra API local
+@base_url = http://localhost:5001/api
 
-### 1. GET Categorias (200 OK)
+### 1. Consultar todas las categorías (200 OK)
 GET {{base_url}}/Categorias
 
-### 2. GET Lista de Recetas con paginacion (200 OK)
+### 2. Listar recetas con paginación (200 OK)
 GET {{base_url}}/Recetas?page=1&pageSize=5
 
-### 3. GET Busqueda por texto y filtro por categoria (200 OK)
+### 3. Buscar recetas por texto y categoría (200 OK)
 GET {{base_url}}/Recetas?search=Pollo&categoriaId=2
 
-### 4. POST Crear receta nueva (201 Created + Header Location)
+### 4. Crear una nueva receta (201 Created)
 POST {{base_url}}/Recetas
 Content-Type: application/json
-
 {
   "nombre": "Montucas Catrachas",
   "ingredientes": "Elote tierno molido, carne de cerdo o pollo, mantequilla, leche, hojas de elote",
@@ -20,7 +20,7 @@ Content-Type: application/json
   "categoriaId": 2
 }
 
-### 5. POST Regla de negocio: Nombre duplicado (409 Conflict)
+### 5. Error: Nombre duplicado (409 Conflict)
 POST {{base_url}}/Recetas
 Content-Type: application/json
 
@@ -31,7 +31,7 @@ Content-Type: application/json
   "categoriaId": 2
 }
 
-### 6. POST Validacion de datos invalidos (400 Bad Request)
+### 6. Error: Datos inválidos (400 Bad Request)
 POST {{base_url}}/Recetas
 Content-Type: application/json
 
@@ -42,13 +42,13 @@ Content-Type: application/json
   "categoriaId": 99
 }
 
-### 7. GET Detalle por ID (200 OK - Sustituir ID real)
+### 7. Consultar detalle por ID (200 OK - Reemplaza por un ID real)
 GET {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000
 
-### 8. GET Detalle ID inexistente (404 Not Found)
+### 8. Error: Receta inexistente (404 Not Found)
 GET {{base_url}}/Recetas/99999999-9999-9999-9999-999999999999
 
-### 9. PUT Actualizar receta (204 No Content - Sustituir ID real)
+### 9. Actualizar receta (204 No Content - Reemplaza por un ID real)
 PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000
 Content-Type: application/json
 
@@ -59,5 +59,57 @@ Content-Type: application/json
   "categoriaId": 2
 }
 
-### 10. DELETE Eliminar receta (204 No Content - Sustituir ID real)
+### 10. Eliminar receta (204 No Content - Reemplaza por un ID real)
 DELETE {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000
+
+### =========================================================================
+### PRUEBAS DE IMAGEN (BASE64) Y VIDEO (MULTIPART)
+### =========================================================================
+
+### 11. Subir imagen válida en Base64 (200 OK - Reemplaza por un ID real)
+PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/imagen-base64
+Content-Type: application/json
+
+{
+  "nombreArchivo": "montucas.png",
+  "imagenBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+}
+
+### 12. Error: Base64 inválido (400 Bad Request)
+PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/imagen-base64
+Content-Type: application/json
+
+{
+  "nombreArchivo": "invalido.png",
+  "imagenBase64": "esto_no_es_base64_valido_123"
+}
+
+### 13. Error: Formato no permitido en Base64 (415 Unsupported Media Type - Texto plano)
+PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/imagen-base64
+Content-Type: application/json
+
+{
+  "nombreArchivo": "documento.txt",
+  "imagenBase64": "SG9sYSBtdW5kbyBlc3RvIGVzIHVuIGFybGl2byB0eHQgbm8gcGVybWl0aWRv"
+}
+
+### 14. Consultar imagen guardada (200 OK - Devuelve image/png, image/jpeg o image/webp)
+GET {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/imagen
+
+### 15. Eliminar imagen de la receta (204 No Content)
+DELETE {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/imagen
+
+### 16. Subir video MP4 válido (200 OK - Multipart Form-Data)
+PUT {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/video
+Content-Type: multipart/form-data; boundary=BoundaryVideo
+
+--BoundaryVideo
+Content-Disposition: form-data; name="archivo"; filename="preparacion.mp4"
+Content-Type: video/mp4
+
+< ./ruta/a/tu/video_prueba.mp4
+--BoundaryVideo--
+
+### 17. Reproducir video con soporte de rangos (206 Partial Content)
+GET {{base_url}}/Recetas/00000000-0000-0000-0000-000000000000/video
+Range: bytes=0-1023
